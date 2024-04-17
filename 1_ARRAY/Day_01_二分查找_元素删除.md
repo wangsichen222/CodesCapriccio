@@ -1,35 +1,34 @@
 # 数组理论基础
 
-**数组是存放在连续内存空间上的相同类型数据的集。**
+**数组是存放在连续内存空间上的相同类型数据的集合**
 
 *   **数组下标都是从0开始的**
 
-*   **数组内存空间的地址是连续的（在删除或者增添元素的时候，需移动其他元素的地址）**
+*   **数组内存空间的地址是连续的：** 在删除或者增添元素的时候，需移动其他元素的地址
 
 *   **vector 和 array的区别：** vector的底层实现是array，严格来讲vector是容器，不是数组
 
 *   **数组的元素是不能删的，只能覆盖**
 
-*   **二维数组在内存的空间地址是连续的么？在C++中二维数组是连续分布的**
+*   **二维数组在内存的空间地址是连续分布的**
 
 # 二分查找
 
-## 例题：
+### 例题：
 
 [704.二分查找](https://leetcode.cn/problems/binary-search/)
 
-
-### **关键问题：区间定义**
+#### **关键问题：区间定义**
 
 *   左闭右闭：**\[left, right]**
 
 *   左闭右开：**\[left, right)**
 
-### 左闭右闭：**\[left, right]**
+#### 左闭右闭：**\[left, right]**
 
 *   **while (left <\= right) 要使用 <\=** ，因为left \=\= right是有意义的，所以使用 <\=
 
-*   **if (nums\[middle] > target) right 更新为 middle - 1** ，因为当前这个nums\[middle]一定不是target，那么接下来要查找的左区间结束下标位置就是 middle - 1
+*   **if (nums\[middle] > target) right 更新为 middle - 1**，因为当前这个nums\[middle]一定不是target，那么接下来要查找的左区间结束下标位置就是 middle - 1
 
 ```C++
 class Solution
@@ -74,11 +73,11 @@ public:
 
 *   空间复杂度：O(1)
 
-### 左闭右开：**\[left, right)**
+#### 左闭右开：**\[left, right)**
 
 *   **while (left < right)，这里使用 <** ,因为left \=\= right在区间\[left, right)是没有意义的
 
-*   **if (nums\[middle] > target) right 更新为 middle**，因为当前nums\[middle]不等于target，去左区间继续寻找，而寻找区间是左闭右开区间，所以right更新为middle，即：下一个查询区间不会去比较nums\[middle]
+*   **if (nums\[middle] > target) right 更新为 middle **，因为当前nums\[middle]不等于target，去左区间继续寻找，而寻找区间是左闭右开区间，所以right更新为middle，即：下一个查询区间不会去比较nums\[middle]
 
 ```CPP
 // 版本二
@@ -116,7 +115,7 @@ public:
 
 *   空间复杂度：O(1)
 
-## 相关题：
+### 相关题：
 
 #### [35.搜索插入位置](https://programmercarl.com/0035.%E6%90%9C%E7%B4%A2%E6%8F%92%E5%85%A5%E4%BD%8D%E7%BD%AE.html)
 
@@ -149,6 +148,8 @@ public:
 
 #### [69.x 的平方根](https://leetcode.cn/problems/sqrtx/)
 
+##### 暴力解法
+
 ```C++
 class Solution
 {
@@ -162,17 +163,17 @@ public:
 
 #### [367.有效的完全平方数](https://leetcode.cn/problems/valid-perfect-square/)
 
-# 移除元素
+# 双指针
 
-## 例题：
+### 例题：
 
 [27.移除元素](https://leetcode.cn/problems/remove-element/)
 
-### **关键问题：数组内存地址连续**
+#### **关键问题：数组内存地址连续**
 
 数组的元素在内存地址中是连续的，**不能**单独**删除**数组中的某个元素，**只能覆盖**。
 
-### 暴力解法
+#### 暴力解法
 
 双循环，递归寻找
 
@@ -212,7 +213,7 @@ public:
 
 *   空间复杂度：O(1)
 
-### 双指针法
+#### 双指针法
 
 双指针法（快慢指针法）： 通过一个快指针和慢指针在**一个for循环下完成两个for循环的工作**
 
@@ -253,12 +254,70 @@ public:
 
 *   空间复杂度：O(1)
 
-## 相关题：
+### 相关题：
 
-### [26.删除排序数组中的重复项](https://leetcode.cn/problems/remove-duplicates-from-sorted-array/)
+#### [26.删除排序数组中的重复项](https://leetcode.cn/problems/remove-duplicates-from-sorted-array/)
 
-### [283.移动零](https://leetcode.cn/problems/move-zeroes/)
+#### [283.移动零](https://leetcode.cn/problems/move-zeroes/)
 
-### [844.比较含退格的字符串](https://leetcode.cn/problems/backspace-string-compare/)
+#### [844.比较含退格的字符串](https://leetcode.cn/problems/backspace-string-compare/)
 
-### [977.有序数组的平方](https://leetcode.cn/problems/squares-of-a-sorted-array/)
+#### [977.有序数组的平方](https://leetcode.cn/problems/squares-of-a-sorted-array/)
+
+##### 暴力解法
+
+```C++
+class Solution
+{
+public:
+   // 定义一个函数，接收一个整数数组，返回一个排序后的平方数数组
+   vector<int> sortedSquares(vector<int> &nums)
+   {
+       int size = nums.size();  // 获取数组的大小
+       for (int i = 0; i < size; i++)  // 遍历数组
+       {
+           nums[i] *= nums[i];  // 将数组中的每个数字平方
+       }
+       sort(nums.begin(), nums.end());  // 对平方后的数组进行排序
+       return nums;  // 返回排序后的数组
+   }
+};
+```
+
+*   时间复杂度是 O(n + nlogn)
+
+##### 双指针法
+
+```C++
+class Solution
+{
+public:
+    // 定义一个函数，接收一个整数数组，返回一个排序后的平方数数组
+    vector<int> sortedSquares(vector<int> &nums)
+    {
+        int size = nums.size();                // 获取数组的大小
+        vector<int> output(size, 0);           // 创建一个与输入数组等长的，全为0的输出数组
+        for (int i = 0, j = size - 1; i <= j;) // 双指针从头尾同时遍历
+        {
+            if (pow(nums[i],2) < pow(nums[j],2)) // 如果当前头元素的平方小于尾元素的平方
+            {
+                output[--size] = pow(nums[j],2); // 将尾元素的平方放入输出数组的相应位置
+                j--;                                // 尾指针向左移动
+            }
+            else
+            {
+                output[--size] = pow(nums[i],2); // 如果头元素的平方大于或等于尾元素的平方，将头元素的平方放入输出数组的相应位置
+                i++;                                // 头指针向右移动
+            }
+        }
+        return output; // 返回排序后的平方数数组
+    }
+};
+```
+
+*   时间复杂度为O(n)
+
+*   **原数组升序排列，即平方最大值位于两端**
+
+*   **定义新数据组，不改变原数组**
+
