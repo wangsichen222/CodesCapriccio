@@ -25,7 +25,7 @@
 
 *   左闭右开：**\[left, right)**
 
-### 左闭右闭：**\[left, right] **
+### 左闭右闭：**\[left, right]**
 
 *   **while (left <\= right) 要使用 <\=** ，因为left \=\= right是有意义的，所以使用 <\=
 
