@@ -14,7 +14,7 @@
 
 ## 二分查找
 
-### 例题：
+### 例题
 
 [704.二分查找](https://leetcode.cn/problems/binary-search/)
 
@@ -115,7 +115,7 @@ public:
 
 *   空间复杂度：O(1)
 
-### 相关题：
+### 相关题
 
 #### [35.搜索插入位置](https://programmercarl.com/0035.%E6%90%9C%E7%B4%A2%E6%8F%92%E5%85%A5%E4%BD%8D%E7%BD%AE.html)
 
@@ -165,7 +165,7 @@ public:
 
 ## 双指针
 
-### 例题：
+### 例题
 
 [27.移除元素](https://leetcode.cn/problems/remove-element/)
 
@@ -254,7 +254,7 @@ public:
 
 *   空间复杂度：O(1)
 
-### 相关题：
+### 相关题
 
 #### [26.删除排序数组中的重复项](https://leetcode.cn/problems/remove-duplicates-from-sorted-array/)
 
