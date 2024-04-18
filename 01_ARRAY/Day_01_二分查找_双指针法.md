@@ -77,7 +77,7 @@ public:
 
 *   **while (left < right)，这里使用 <** ,因为left \=\= right在区间\[left, right)是没有意义的
 
-*   **if (nums\[middle] > target) right 更新为 middle **，因为当前nums\[middle]不等于target，去左区间继续寻找，而寻找区间是左闭右开区间，所以right更新为middle，即：下一个查询区间不会去比较nums\[middle]
+*   **if (nums\[middle] > target) right 更新为 middle**，因为当前nums\[middle]不等于target，去左区间继续寻找，而寻找区间是左闭右开区间，所以right更新为middle，即：下一个查询区间不会去比较nums\[middle]
 
 ```CPP
 // 版本二
