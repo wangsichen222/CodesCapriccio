@@ -196,4 +196,203 @@ public:
 };
 ```
 
+## 两个数组的交集
+
+### 例题
+
+[349. 两个数组的交集 - 力扣（LeetCode）](https://leetcode.cn/problems/intersection-of-two-arrays/description/)
+
+### **关键点**
+
+*   **输出结果中的每个元素一定是唯一的**
+
+    输出的结果的去重的， 同时可以不考虑输出结果的顺序
+
+*   **使用数组来做哈希的题目，是因为题目都限制了数值的大小**
+
+    而这道题目没有限制数值的大小，就无法使用数组来做哈希表了
+
+    如果哈希值比较少、特别分散、跨度非常大，使用数组就造成空间的极大浪费
+
+*   **std::unordered\_set的底层实现是哈希表**
+
+    使用unordered\_set 读写效率是最高的，并不需要对数据进行排序，且不用让数据重复
+
+##### unordered\_set实现
+
+```C++
+class Solution
+{
+public:
+    // 定义一个函数，返回两个数组的交集
+    vector<int> intersection(vector<int> &nums1, vector<int> &nums2)
+    {
+        // 创建一个无序集合，用于存储结果
+        unordered_set<int> resultSet;
+        // 创建一个无序集合，用于存储nums1中的元素
+        unordered_set<int> numsSet(nums1.begin(), nums1.end());
+        // 遍历nums2
+        for (int num : nums2)
+        {
+            // 如果num在numsSet中，则将其添加到resultSet中
+            if (numsSet.find(num) != numsSet.end())
+            {
+                resultSet.insert(num);
+            }
+        }
+        // 返回结果集，将无序集合转换为向量
+        return vector<int>(resultSet.begin(), resultSet.end());
+    }
+};
+```
+
+*   时间复杂度: O(n + m) m 是最后要把 set转成vector
+
+*   空间复杂度: O(n)
+
+## 快乐数
+
+### 例题
+
+[202. 快乐数 - 力扣（LeetCode）](https://leetcode.cn/problems/happy-number/description/)
+
+### 关键点
+
+*   求和的过程中，sum会重复出现，**无限循环**
+
+*   **快速判断一个元素是否出现集合内**
+
+*   **难点：求和的过程，对取数值各个位上的单数操作**
+
+##### unordered\_set实现
+
+```C++
+class Solution
+{
+public:
+   // 定义一个方法，用于计算一个数的每个位的平方和
+   int getNum(int n)
+   {
+       int sum = 0;  // 初始化和为0
+       while (n != 0)  // 当n不等于0时，循环计算
+       {
+           sum += pow((n % 10), 2);  // 计算n的最后一位数的平方，加到sum上
+           n /= 10;  // 去掉n的最后一位数
+       }
+       return sum;  // 返回和
+   }
+
+   // 定义一个方法，用于判断一个数是否是快乐数
+   bool isHappy(int n)
+   {
+       unordered_set<int> set;  // 定义一个无序集合，用于存储已经计算过的数
+       while (1)  // 无限循环，直到满足条件退出
+       {
+           int sum = getNum(n);  // 计算n的每个位的平方和
+           if (sum == 1)  // 如果和为1，则n是快乐数，返回true
+           {
+               return true;
+           }
+           if (set.find(sum) != set.end())  // 如果和已经在集合中，说明进入了循环，返回false
+           {
+               return false;
+           }
+           else  // 否则，将和插入集合，然后将n设为和，继续循环
+           {
+               set.insert(sum);
+           }
+           n = sum;
+       }
+   }
+};
+```
+
+*   时间复杂度: O(logn)
+
+*   空间复杂度: O(logn)
+
+## 两数之和
+
+### 例题
+
+[1. 两数之和 - 力扣（LeetCode）](https://leetcode.cn/problems/two-sum/)
+
+### 关键
+
+*   不仅要知道元素有没有遍历过，还要知道这个元素对应的下标
+
+*   需要使用 key value结构来存放，key来存元素，value来存下标，故**使用map**
+
+*   map目的用来存放我们访问过的元素，遍历数组时需要记录遍历过哪些元素和对应的下标
+
+*   判断元素是否出现：map中的存储结构为 {**key：数据元素**，**value：数组元素对应的下标**}
+
+
+
+### 数组 与 set 的局限
+
+*   数组的大小是受限制的，而且如果元素很少，而哈希值太大会造成内存空间的浪费
+
+*   set是一个集合，里面放的元素只能是一个key，而两数之和这道题目，不仅要判断y是否存在而且还要记录y的下标位置，因为要返回x 和 y的下标。所以set 也不能用
+
+##### 暴力解法
+
+```C++
+// 暴力解法
+class Solution
+{
+public:
+    vector<int> twoSum(vector<int> &nums, int target)
+    {
+        int k1, k2;
+        for (int i = 0; i < nums.size(); i++)
+        {
+            for (int j = i + 1; j < nums.size(); j++)
+            {
+                if (nums[i] + nums[j] == target)
+                {
+                    k1 = i;
+                    k2 = j;
+                }
+            }
+        }
+        return {k1, k2};
+    }
+};
+```
+
+##### 哈希解法
+
+```C++
+// 哈希法
+class Solution
+{
+public:
+   // 定义函数twoSum，输入参数为一个整数数组和一个目标数，返回一个包含两个整数的vector
+   vector<int> twoSum(vector<int> &nums, int target)
+   {
+       // 定义一个无序map，键为int类型，值为int类型
+       unordered_map <int,int> map;
+
+       // 遍历数组
+       for (int i = 0; i < nums.size(); i++)
+       {
+           // 在map中查找当前元素的补数（目标数减去当前元素）
+           auto iter = map.find(target - nums[i]); // 如果找到了，说明已经找到了一半，返回这两个数的索引
+           if(iter != map.end()) {
+               return {iter->second, i};
+           }
+           // 如果没找到，就把当前元素和它的索引加入到map中，继续寻找下一个元素的补数
+           map.insert(pair<int, int>(nums[i], i)); 
+       }
+       // 如果遍历完都没找到，返回空vector
+       return {};
+   }
+};
+```
+
+*   时间复杂度: O(n)
+
+*   空间复杂度: O(n)
+
 
