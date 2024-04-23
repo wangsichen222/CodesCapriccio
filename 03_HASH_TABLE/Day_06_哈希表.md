@@ -100,3 +100,100 @@
 
 *   如果在做面试题目的时候遇到需要判断一个元素是否出现过的场景也应该第一时间想到哈希法
 
+## 有效的字母异位词
+
+### 例题
+
+[242. 有效的字母异位词 - 力扣（LeetCode）](https://leetcode.cn/problems/valid-anagram/description/)
+
+##### 哈希表实现（数组）
+
+```C++
+class Solution
+{
+public:
+   bool isAnagram(string s, string t)
+   {
+       int record[26] = {0}; // 创建一个长度为26的数组，用于记录字符出现的次数
+       for (int i = 0; i < s.size(); i++)
+       {
+           // 遍历字符串s，对应字符增加计数
+           record[s[i] - 'a']++;
+       }
+       for (int i = 0; i < t.size(); i++)
+       {
+           // 遍历字符串t，对应字符减少计数
+           record[t[i] - 'a']--;
+       }
+       for (int i = 0; i < 26; i++)
+       {
+           // 如果数组中有非0元素，说明两个字符串不是字母异位词
+           if (record[i] != 0)
+           {
+               return false;
+           }
+       }
+       // 如果数组中所有元素都为0，说明两个字符串是字母异位词
+       return true;
+   }
+};
+```
+
+*   时间复杂度: O(n)
+
+*   空间复杂度: O(1)
+
+## 查找常用字符
+
+### 例题
+
+[1002. 查找共用字符 - 力扣（LeetCode）](https://leetcode.cn/problems/find-common-characters/description/)
+
+##### 哈希表实现
+
+```C++
+class Solution {
+public:
+    vector<string> commonChars(vector<string>& words) {
+        vector<vector<int>> record(words.size(), vector<int>(26,0));
+        for (int i = 0; i < words.size(); i++) {
+            for (int j = 0; j < words[i].size(); j++) {
+                record[i][words[i][j] - 'a']++;
+            }
+        }
+
+        // //输出检查
+        // for (int i = 0; i < words.size(); i++) { 
+        //     for (int j = 0; j < 26; j++) {
+        //         cout << record[i][j] << " ";
+        //     }
+        //     cout << endl;
+        // }
+
+        // 二维数组按列求最小值
+        int hash[26];
+        fill_n(hash, 26, INT32_MAX); // 定义hash为全INT32_MAX的26列数组
+        for (int i = 0; i < 26; i++) {
+            for (int j = 0; j < words.size(); j++) {
+                if (hash[i] > record[j][i]) {
+                    hash[i] = record[j][i];
+                }
+            }
+        }
+
+        // 结果输出
+        vector<string> result;
+        for (int k = 0; k < 26; k++) {
+            while (hash[k] != 0)
+            {
+                string s(1, k + 'a');
+                result.push_back(s);
+                hash[k]--;
+            }
+        }
+        return result;       
+    }
+};
+```
+
+
