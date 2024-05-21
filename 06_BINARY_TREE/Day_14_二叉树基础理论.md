@@ -81,53 +81,321 @@ struct TreeNode {
 
 ##### 前序遍历
 
+[144. 二叉树的前序遍历 - 力扣（LeetCode）](https://leetcode.cn/problems/binary-tree-preorder-traversal/description/)
+
+```C++
+class Solution
+{
+public:
+   // 前序遍历二叉树，将结点值添加到输入的vector中
+   void traversal(TreeNode *cur, vector<int> &vec)
+   {
+       if (cur == NULL) // 如果当前节点为空，则直接返回
+           return;
+       vec.push_back(cur->val); // 将当前节点的值添加到vector中
+       traversal(cur->left, vec); // 递归遍历左子树
+       traversal(cur->right, vec); // 递归遍历右子树
+   }
+
+   // 对二叉树进行前序遍历，并返回遍历结果
+   vector<int> preorderTraversal(TreeNode *root)
+   {
+       vector<int> result; // 用于存储遍历结果的vector
+       traversal(root, result); // 对二叉树进行前序遍历
+       return result; // 返回遍历结果
+   }
+};
+```
+
+##### 后序遍历
+
+[145. 二叉树的后序遍历 - 力扣（LeetCode）](https://leetcode.cn/problems/binary-tree-postorder-traversal/description/)
+
 ```C++
 class Solution {
 public:
-    void traversal(TreeNode* cur, vector<int>& vec) {
-        if (cur == NULL) return;
-        vec.push_back(cur->val);    // 中
-        traversal(cur->left, vec);  // 左
-        traversal(cur->right, vec); // 右
-    }
-    vector<int> preorderTraversal(TreeNode* root) {
-        vector<int> result;
-        traversal(root, result);
-        return result;
-    }
+   // 后序遍历二叉树，将结果存储在vec中
+   void traversal(TreeNode* cur, vector<int>& vec)
+   {
+       if (cur == NULL) // 如果当前节点为空，则直接返回
+           return;
+       traversal(cur->left, vec); // 先遍历左子树
+       traversal(cur->right, vec); // 再遍历右子树
+       vec.push_back(cur->val); // 将当前节点的值添加到vec中，这是后序遍历的特点
+   }
+
+   // 对二叉树进行后序遍历，返回遍历结果
+   vector<int> postorderTraversal(TreeNode* root)
+   {
+       vector<int> result; // 存储遍历结果的vector
+       traversal(root, result); // 调用traversal函数进行遍历
+       return result; // 返回遍历结果
+   }
+};
+```
+
+##### 中续遍历
+
+[94. 二叉树的中序遍历 - 力扣（LeetCode）](https://leetcode.cn/problems/binary-tree-inorder-traversal/description/)
+
+```C++
+class Solution
+{
+public:
+   // 中序遍历二叉树的函数，使用递归实现
+   void traversal(TreeNode *cur, vector<int> vec)
+   {
+       if (cur == NULL) // 如果当前节点为空，则直接返回
+           return;
+       traversal(cur->left, vec); // 先遍历左子树
+       vec.push_back(cur->val); // 然后将当前节点的值添加到结果数组中
+       traversal(cur->right, vec); // 最后遍历右子树
+   }
+
+   // 对外提供的中序遍历接口，接收一个二叉树的根节点，返回中序遍历的结果
+   vector<int> inorderTraversal(TreeNode *root)
+   {
+       vector<int> vec; // 初始化结果数组
+       traversal(root, vec); // 调用递归函数进行中序遍历
+       return vec; // 返回遍历结果
+   }
+};
+```
+
+## 二叉树迭代遍历
+
+用**栈**实现二叉树的前后中序遍历
+
+### 迭代遍历实现
+
+##### 前序遍历
+
+*   前序遍历是**中左右**，每次先处理的是中间节点
+
+*   先将**根节点**放入栈中，然后将**右孩子**加入栈，再加入**左孩子**
+
+*   这样出栈的时候才是**中左右**的顺序
+
+```C++
+class Solution
+{
+public:
+   // 使用栈实现二叉树的前序遍历（中-右-左）
+   vector<int> preorderTraversal(TreeNode *root)
+   {
+       stack<TreeNode *> st; // 定义一个栈，用于存储节点
+       vector<int> result; // 定义一个向量，用于存储遍历结果
+     
+       if (root == NULL) // 如果根节点为空，则直接返回空结果
+           return result;
+     
+       st.push(root); // 将根节点压入栈中
+       while (!st.empty()) // 当栈不为空时，继续遍历
+       {
+           TreeNode *node = st.top(); // 取栈顶节点
+           st.pop(); // 弹出栈顶节点
+           result.push_back(node->val); // 将栈顶节点的值添加到结果向量中
+         
+           if (node->right) // 如果右子节点存在
+               st.push(node->right); // 将右子节点压入栈中（空节点不入栈）
+           if (node->left) // 如果左子节点存在
+               st.push(node->left); // 将左子节点压入栈中（空节点不入栈）
+       }
+     
+       return result; // 返回遍历结果
+   }
+};
+
+```
+
+##### 后序遍历
+
+```C++
+class Solution
+{
+public:
+   // 定义一个函数，用于实现二叉树的后序遍历
+   vector<int> postorderTraversal(TreeNode *root)
+   {
+       stack<TreeNode *> st; // 定义一个栈，用于存储节点
+       vector<int> result; // 定义一个向量，用于存储遍历结果
+     
+       if (root == NULL) // 如果根节点为空，则直接返回空结果
+           return result;
+     
+       st.push(root); // 将根节点入栈
+       while (!st.empty()) // 当栈不为空时，执行循环
+       {
+           TreeNode *node = st.top(); // 获取栈顶节点
+           st.pop(); // 弹出栈顶节点
+           result.push_back(node->val); // 将栈顶节点的值添加到结果向量中
+         
+           if (node->left) // 如果栈顶节点有左子节点
+               st.push(node->left); // 将左子节点入栈 （空节点不入栈）
+           if (node->right) // 如果栈顶节点有右子节点
+               st.push(node->right); // 将右子节点入栈 （空节点不入栈）
+       }
+     
+       reverse(result.begin(), result.end()); // 将结果向量反转，得到的就是后序遍历的结果
+       return result; // 返回后序遍历结果
+   }
 };
 ```
 
 ##### 中序遍历
 
 ```C++
-void traversal(TreeNode* cur, vector<int>& vec) {
-    if (cur == NULL) return;
-    traversal(cur->left, vec);  // 左
-    vec.push_back(cur->val);    // 中
-    traversal(cur->right, vec); // 右
-}
+class Solution
+{
+public:
+   // 定义一个函数，实现二叉树的中序遍历
+   vector<int> inorderTraversal(TreeNode *root)
+   {
+       vector<int> result; // 存储中序遍历的结果
+       stack<TreeNode *> st; // 定义一个栈，用于存储节点
+       TreeNode *cur = root; // 初始化当前访问的节点为根节点
+     
+       while (cur != NULL || !st.empty()) // 当当前访问的节点不为空，或者栈不为空时，继续遍历
+       {
+           if (cur != NULL)
+           {                    
+               st.push(cur); // 如果当前访问的节点不为空，将其放入栈中
+               cur = cur->left; // 然后访问其左子节点
+           }
+           else
+           {
+               cur = st.top(); // 如果当前访问的节点为空，说明已经访问到叶子节点，从栈中弹出一个节点
+               st.pop();
+               result.push_back(cur->val); // 将弹出的节点的值加入到结果数组中
+               cur = cur->right; // 访问该节点的右子节点
+           }
+       }
+       return result; // 返回中序遍历的结果
+   }
+};
 ```
 
-##### 后续遍历
+### 统一迭代实现
+
+**将访问的节点**放入栈中，把**要处理的节点**也放入栈
+
+要处理的节点放入栈之后，紧接着放入一个**空指针**作为**标记**
+
+##### 中序遍历
 
 ```C++
-void traversal(TreeNode* cur, vector<int>& vec) {
-    if (cur == NULL) return;
-    traversal(cur->left, vec);  // 左
-    traversal(cur->right, vec); // 右
-    vec.push_back(cur->val);    // 中
-}
+class Solution
+{
+public:
+    vector<int> inorderTraversal(TreeNode *root)
+    {
+        vector<int> result;
+        stack<TreeNode *> st;
+
+        if (root != NULL)
+            st.push(root);
+        while (!st.empty())
+        {
+            TreeNode *node = st.top();
+            if (node != NULL)
+            {
+                st.pop(); // 将该节点弹出，避免重复操作，下面再将右中左节点添加到栈中
+                if (node->right)
+                    st.push(node->right); // 添加右节点（空节点不入栈）
+
+                st.push(node); // 添加中节点
+                st.push(NULL); // 中节点访问过，但是还没有处理，加入空节点做为标记。
+
+                if (node->left)
+                    st.push(node->left); // 添加左节点（空节点不入栈）
+            }
+            else
+            {                    // 只有遇到空节点的时候，才将下一个节点放进结果集
+                st.pop();        // 将空节点弹出
+                node = st.top(); // 重新取出栈中元素
+                st.pop();
+                result.push_back(node->val); // 加入到结果集
+            }
+        }
+        return result;
+    }
+};
 ```
 
-### 例题1：前序遍历
+##### 前序遍历
 
-[144. 二叉树的前序遍历 - 力扣（LeetCode）](https://leetcode.cn/problems/binary-tree-preorder-traversal/description/)
+```C++
+class Solution
+{
+public:
+    vector<int> preorderTraversal(TreeNode *root)
+    {
+        vector<int> result;
+        stack<TreeNode *> st;
 
-### 例题2：后序遍历
+        if (root != NULL)
+            st.push(root);
+        while (!st.empty())
+        {
+            TreeNode *node = st.top();
+            if (node != NULL)
+            {
+                st.pop();
+                if (node->right)
+                    st.push(node->right); // 右
+                if (node->left)
+                    st.push(node->left); // 左
+                st.push(node);           // 中
+                st.push(NULL);
+            }
+            else
+            {
+                st.pop();
+                node = st.top();
+                st.pop();
+                result.push_back(node->val);
+            }
+        }
+        return result;
+    }
+};
 
-[145. 二叉树的后序遍历 - 力扣（LeetCode）](https://leetcode.cn/problems/binary-tree-postorder-traversal/description/)
+```
 
-### 例题3：中序遍历
+##### 后序遍历
 
-[94. 二叉树的中序遍历 - 力扣（LeetCode）](https://leetcode.cn/problems/binary-tree-inorder-traversal/description/)
+    class Solution
+    {
+    public:
+        vector<int> postorderTraversal(TreeNode *root)
+        {
+            vector<int> result;
+            stack<TreeNode *> st;
+            if (root != NULL)
+                st.push(root);
+            while (!st.empty())
+            {
+                TreeNode *node = st.top();
+                if (node != NULL)
+                {
+                    st.pop();
+                    st.push(node); // 中
+                    st.push(NULL);
+
+                    if (node->right)
+                        st.push(node->right); // 右
+                    if (node->left)
+                        st.push(node->left); // 左
+                }
+                else
+                {
+                    st.pop();
+                    node = st.top();
+                    st.pop();
+                    result.push_back(node->val);
+                }
+            }
+            return result;
+        }
+    };
+
